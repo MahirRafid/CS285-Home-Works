@@ -109,6 +109,7 @@ class MLPPolicySL(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
             itertools.chain([self.logstd], self.mean_net.parameters()),
             self.learning_rate
         )
+        self.loss = nn.MSELoss()
 
     def save(self, filepath):
         """
@@ -145,7 +146,13 @@ class MLPPolicySL(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
             dict: 'Training Loss': supervised learning loss
         """
         # TODO: update the policy and return the loss
-        loss = TODO
+        predicted_actions = self.forward(observations)
+        loss = self.loss(predicted_actions, actions)
+
+        self.optimizer.zero_grad()
+        self.loss.backward()
+        self.optimizer.step()
+
         return {
             # You can add extra logging information here, but keep this line
             'Training Loss': ptu.to_numpy(loss),
