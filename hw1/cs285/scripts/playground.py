@@ -5,7 +5,7 @@ from cs285.policies.loaded_gaussian_policy import LoadedGaussianPolicy
 from cs285.infrastructure.utils import sample_trajectory
 
 env_id = 'HalfCheetah-v4'
-expert_policy_file = '../policies/experts/HalfCheetah-v4')
+expert_policy_file = '../policies/experts/HalfCheetah.pkl'
 
 env = gym.make(env_id)
 policy = LoadedGaussianPolicy(expert_policy_file)
