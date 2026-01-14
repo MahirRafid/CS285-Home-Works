@@ -84,7 +84,7 @@ def run_training_loop(params):
     ## AGENT
     #############
 
-    # TODO: Implement missing functions in this class.
+    # TODO: Implement missing functions in this class. --Done
     actor = MLPPolicySL(
         ac_dim,
         ob_dim,
@@ -129,10 +129,11 @@ def run_training_loop(params):
         else:
             # DAGGER training from sampled data relabeled by expert
             assert params['do_dagger']
-            # TODO: collect `params['batch_size']` transitions
+            # TODO: collect `params['batch_size']` transitions --Done
+            transitions = utils.sample_trajectory(env, actor, 1000)
             # HINT: use utils.sample_trajectories
-            # TODO: implement missing parts of utils.sample_trajectory
-            paths, envsteps_this_batch = TODO
+            # TODO: implement missing parts of utils.sample_trajectory --Done
+            paths, envsteps_this_batch = transitions, len(transitions['terminal'])
 
             # relabel the collected obs with actions from a provided expert policy
             if params['do_dagger']:
