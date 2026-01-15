@@ -10,6 +10,6 @@ expert_policy_file = '../policies/experts/HalfCheetah.pkl'
 env = gym.make(env_id)
 policy = LoadedGaussianPolicy(expert_policy_file)
 
-transitions = utils.sample_trajectory(env, policy, 100)
-paths, steps = transitions, len(transitions['terminal'])
-print(paths, steps)
+paths, steps = utils.sample_trajectories(env, policy, 1000, 100)
+
+print(len(paths))

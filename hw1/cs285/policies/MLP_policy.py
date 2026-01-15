@@ -146,7 +146,9 @@ class MLPPolicySL(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
             dict: 'Training Loss': supervised learning loss
         """
         # TODO: update the policy and return the loss
-        predicted_actions = self.forward(observations)
+        predicted_actions = ptu.to_numpy(self.forward(observations))
+        print(f'Predicted Action => {predicted_actions} | {type(predicted_actions)}')
+        print(f'Expert Action => {actions} | {type(actions)}') 
         loss = self.loss(predicted_actions, actions)
 
         self.optimizer.zero_grad()
