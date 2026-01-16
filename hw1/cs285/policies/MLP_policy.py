@@ -130,7 +130,7 @@ class MLPPolicySL(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
         # through it. For example, you can return a torch.FloatTensor. You can also
         # return more flexible objects, such as a
         # `torch.distributions.Distribution` object. It's up to you!
-        mean = self.mean_net(ptu.from_numpy(observation))
+        mean = self.mean_net(observation)
         std = torch.exp(self.logstd)
         dist = torch.distributions.Normal(mean, std)        
         action = dist.sample()
@@ -146,16 +146,25 @@ class MLPPolicySL(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
             dict: 'Training Loss': supervised learning loss
         """
         # TODO: update the policy and return the loss
-        predicted_actions = ptu.to_numpy(self.forward(observations))
-        print(f'Predicted Action => {predicted_actions} | {type(predicted_actions)}')
-        print(f'Expert Action => {actions} | {type(actions)}') 
-        loss = self.loss(predicted_actions, actions)
+        observations = ptu.from_numpy(observations)
+        actions = ptu.from_numpy(actions)
 
+        # print(f'Predicted Action => {predicted_actions.shape} | {type(predicted_actions)}')
+        # print(f'Expert Action => {actions.shape} | {type(actions)}') 
+        
         self.optimizer.zero_grad()
-        self.loss.backward()
+        predicted_actions = self.forward(observations)
+        print(predicted_actions.requires_grad)
+        loss = self.loss(predicted_actions, actions)
+        # print(f'Loss => {loss:.2f}')
+        loss.backward()
         self.optimizer.step()
 
         return {
             # You can add extra logging information here, but keep this line
             'Training Loss': ptu.to_numpy(loss),
         }
+
+    def get_action(self, observations): 
+        action = self.forward(ptu.from_numpy(observations))
+        return ptu.to_numpy(actions)

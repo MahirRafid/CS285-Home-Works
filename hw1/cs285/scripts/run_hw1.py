@@ -95,6 +95,7 @@ def run_training_loop(params):
 
     # replay buffer
     replay_buffer = ReplayBuffer(params['max_replay_buffer_size'])
+    # print(len(replay_buffer))
 
     #######################
     ## LOAD EXPERT POLICY
@@ -141,9 +142,9 @@ def run_training_loop(params):
                 # TODO: relabel collected obsevations (from our policy) with labels from expert policy --Done
                 # HINT: query the policy (using the get_action function) with paths[i]["observation"]
                 # and replace paths[i]["action"] with these expert labels
-                for path in paths: 
-                    path['action'] = expert_policy.get_action(ptu.from_numpy(path['observation']))
-
+                for path in paths:
+                    path['action'] = expert_policy.get_action(path['observation'])
+        
         total_envsteps += envsteps_this_batch
         # add collected data to replay buffer
         replay_buffer.add_rollouts(paths)
@@ -158,7 +159,7 @@ def run_training_loop(params):
           # HINT2: use np.random.permutation to sample random indices
           # HINT3: return corresponding data points from each array (i.e., not different indices from each array)
           # for imitation learning, we only need observations and actions.  
-          random_idx = np.random.permutation(len(replay_buffer.obs))[:params['train_batch_size']]
+          random_idx = np.random.permutation(len(replay_buffer))[:params['train_batch_size']]
           ob_batch, ac_batch = replay_buffer.obs[random_idx], replay_buffer.acs[random_idx]
 
           # use the sampled data to train an agent
