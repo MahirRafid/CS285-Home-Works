@@ -1,4 +1,5 @@
 import torch
+import torch.nn as nn
 import gym
 import cs285.infrastructure.pytorch_util as ptu
 from cs285.policies.MLP_policy import MLPPolicySL
@@ -13,5 +14,9 @@ env = gym.make(env_id)
 actor = MLPPolicySL(6, 17, 2, 32)
 expert_policy = LGP(expert_policy_file)
 
-ob = env.reset()
-print(actor.get_action(ptu.from_numpy(ob)))
+paths, _ = utils.sample_trajectories(env, actor, 10, 5)
+
+for path in paths: 
+    print(type(path['action']))
+    path['action'] = expert_policy.forward(ptu.from_numpy(path['observation']))
+    print(type(path['action']))

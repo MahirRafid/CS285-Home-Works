@@ -133,7 +133,7 @@ class MLPPolicySL(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
         mean = self.mean_net(observation)
         std = torch.exp(self.logstd)
         dist = torch.distributions.Normal(mean, std)        
-        action = dist.sample()
+        action = dist.rsample()
         return action
 
     def update(self, observations, actions):
@@ -154,7 +154,7 @@ class MLPPolicySL(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
         
         self.optimizer.zero_grad()
         predicted_actions = self.forward(observations)
-        print(predicted_actions.requires_grad)
+        # print(predicted_actions.requires_grad)
         loss = self.loss(predicted_actions, actions)
         # print(f'Loss => {loss:.2f}')
         loss.backward()
@@ -166,5 +166,5 @@ class MLPPolicySL(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
         }
 
     def get_action(self, observations): 
-        action = self.forward(ptu.from_numpy(observations))
+        actions = self.forward(ptu.from_numpy(observations))
         return ptu.to_numpy(actions)
