@@ -26,6 +26,7 @@ env.observation_space.seed(seed=seed)
 
 actor_net = nn.Linear(ob_dim, ac_dim)
 critic_net = nn.Linear(ob_dim, 1)
+gamma = 0.99
 
 def get_action(ob): 
     ob = ptu.from_numpy(ob)
@@ -48,7 +49,25 @@ while not done:
     next_states.append(ptu.from_numpy(next_state))
     ob = next_state
 
-state_values = critic_net(torch.stack(states)).squeeze()
+states = torch.stack(states)
+next_states = torch.stack(next_states)
+dones = torch.FloatTensor(dones)
 
+state_values = critic_net(states).squeeze()
 
+next_values = critic_net(next_states).squeeze().to('cpu').detach()
+q_values = torch.FloatTensor(rewards) + gamma * next_values * (1-dones)
 
+advantages = q_values - state_values
+print(f'Vanilla Advantages => \n{advantages}')
+
+# GAE
+advantages = []
+lam = 0.95
+for t in range(len(rewards))[::-1]: 
+    delta = rewards[t] + gamma * next_values[t] * (1-dones[t]) - state_values[t]
+    gae = advantages[0] if len(advantages) > 0 else 0
+    advantages.insert(0, delta + gamma * lam * gae)
+
+advantages = torch.stack(advantages)
+print(f'GAE Advantages => \n{advantages}')
