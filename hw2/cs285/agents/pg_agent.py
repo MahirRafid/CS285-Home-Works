@@ -137,14 +137,15 @@ class PGAgent(nn.Module):
                     # TODO: recursively compute advantage estimates starting from timestep T.
                     # HINT: use terminals to handle edge cases. terminals[i] is 1 if the state is the last in its
                     # trajectory, and 0 otherwise.
-                    pass
+                    delta = rewards + self.gamma*values[i+1] - values[i]
+                    advantages[i] = delta + self.gamma * self.gae_lambda * advantages[i+1]
 
                 # remove dummy advantage
                 advantages = advantages[:-1]
 
         # TODO: normalize the advantages to have a mean of zero and a standard deviation of one within the batch
         if self.normalize_advantages:
-            pass
+            advantages = (advantages - advantages.mean()) / (advantages.std() + 1e-8)
 
         return advantages
 
@@ -156,7 +157,7 @@ class PGAgent(nn.Module):
         Note that all entries of the output list should be the exact same because each sum is from 0 to T (and doesn't
         involve t)!
         """
-        disc_ret = sum([self.gamma**t * rewards[t] for t in range(len(rewards)])
+        disc_ret = sum([self.gamma**t * rewards[t] for t in range(len(rewards))])
         return [disc_ret] * len(rewards)
 
 
