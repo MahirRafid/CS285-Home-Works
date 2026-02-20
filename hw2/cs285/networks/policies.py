@@ -101,7 +101,11 @@ class MLPPolicyPG(MLPPolicy):
         advantages = ptu.from_numpy(advantages)
 
         # TODO: implement the policy gradient actor update.
-        loss = None
+        dist = self.forward(obs)
+        log_probs = dist.log_prob(actions)
+        
+        loss = -log_probs * advantages
+        print(loss)
 
         return {
             "Actor Loss": ptu.to_numpy(loss),

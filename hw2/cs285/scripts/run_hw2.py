@@ -71,7 +71,7 @@ def run_training_loop(args):
         # TODO: sample `args.batch_size` transitions using utils.sample_trajectories
         # make sure to use `max_ep_len`
         trajs, envsteps_this_batch = utils.sample_trajectories(env=env, 
-                                                               policy=agent, 
+                                                               policy=agent.actor, 
                                                                min_timesteps_per_batch=args.batch_size, 
                                                                max_length=max_ep_len)  # TODO
         total_envsteps += envsteps_this_batch
