@@ -1,5 +1,6 @@
 import gym
 from cs285.networks.policies import MLPPolicyPG
+from cs285.networks.critics import ValueCritic
 from cs285.infrastructure import pytorch_util as ptu
 from cs285.infrastructure import utils
 from gym.spaces import Box, Discrete
@@ -44,13 +45,19 @@ agent = PGAgent(ob_dim=ob_dim,
                 gae_lambda=0.95, 
                 normalize_advantages=True)
 
+critic_net = ValueCritic(ob_dim=ob_dim,
+                         n_layers=2,
+                         layer_size=32, 
+                         learning_rate=1e-3)
+
 trajectories, info = utils.sample_trajectories(env=env, 
                                                 policy=agent.actor,
                                                 min_timesteps_per_batch=1000, 
                                                 max_length=200)
 
 trajs_dict = {k: [traj[k] for traj in trajectories] for k in trajectories[0]}
-rewards = trajs_dict['reward']
+obs, actions, rewards, dones = trajs_dict['observation'], trajs_dict['action'], trajs_dict['reward'], trajs_dict['terminal']
+print(rewards)
 
 # def get_action(ob): 
 #     ob = ptu.from_numpy(ob)
