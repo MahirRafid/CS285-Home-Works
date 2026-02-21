@@ -56,8 +56,8 @@ trajectories, info = utils.sample_trajectories(env=env,
                                                 max_length=200)
 
 trajs_dict = {k: [traj[k] for traj in trajectories] for k in trajectories[0]}
-obs, actions, rewards, dones = trajs_dict['observation'], trajs_dict['action'], trajs_dict['reward'], trajs_dict['terminal']
-print(rewards)
+obs, actions, rewards, terminals = trajs_dict['observation'], trajs_dict['action'], trajs_dict['reward'], trajs_dict['terminal']
+agent.update(obs, actions, rewards, terminals)
 
 # def get_action(ob): 
 #     ob = ptu.from_numpy(ob)
