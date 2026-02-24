@@ -71,6 +71,7 @@ class PGAgent(nn.Module):
         actions = np.concatenate(actions)
         rewards = np.concatenate(rewards)
         terminals = np.concatenate(terminals)
+        q_values = np.concatenate(q_values)
         
         # step 2: calculate advantages from Q values
         advantages: np.ndarray = self._estimate_advantage(
