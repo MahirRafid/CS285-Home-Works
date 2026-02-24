@@ -44,7 +44,8 @@ class ValueCritic(nn.Module):
         q_values = ptu.from_numpy(q_values)
 
         # TODO: update the critic using the observations and q_values
-        loss = None
+        state_values = self.forward(obs)
+        loss = q_values - state_values
 
         return {
             "Baseline Loss": ptu.to_numpy(loss),

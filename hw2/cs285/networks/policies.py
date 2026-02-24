@@ -103,9 +103,11 @@ class MLPPolicyPG(MLPPolicy):
         # TODO: implement the policy gradient actor update.
         dist = self.forward(obs)
         log_probs = dist.log_prob(actions)
-        
-        loss = -log_probs * advantages
-        print(loss)
+        loss = torch.mean(-log_probs * advantages)
+
+        self.optimizer.zero_grad()
+        loss.backward()
+        self.optimizer.step()
 
         return {
             "Actor Loss": ptu.to_numpy(loss),
