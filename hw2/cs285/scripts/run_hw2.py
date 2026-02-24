@@ -85,7 +85,7 @@ def run_training_loop(args):
                                         actions=trajs_dict['action'], 
                                         rewards=trajs_dict['reward'], 
                                         terminals=trajs_dict['terminal'])
-
+        
         if itr % args.scalar_log_freq == 0:
             # save eval metrics
             print("\nCollecting data for eval...")
